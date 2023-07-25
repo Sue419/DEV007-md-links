@@ -1,14 +1,17 @@
 const path = require('path');
-const routeExists = require('./index.js');
+const mdLinks = require('./index.js');
+
+// Verificar si existe la ruta 
 
 // Verificar si la ruta es absoluta
-const isAbsolutePath = (path) => {
-  return path.isAbsolute(path);
+const isAbsolute = (ruta) => {
+  return path.isAbsolute(ruta);
 };
-console.log('Es ruta absoluta:', isAbsolutePath());
+console.log('Es ruta absoluta:', isAbsolute(process.argv[2]));
 
 // Verificar si es un archivo Markdown
 const isMarkdownFile = (path) => {
   return path.extname(path) === '.md';
 };
-console.log('Es archivo Markdown:', isMarkdownFile());
+console.log('Es archivo Markdown:', isMarkdownFile(process.argv[2]));
+
