@@ -1,6 +1,8 @@
+const { loadOptions } = require('@babel/core');
 const {mdLinks} = require('./index.js');
+const ruta = process.argv[2];
 
-mdLinks(process.argv[2])
+mdLinks(ruta, options)
   .then((result) => {
     console.log('La ruta existe', result);
   })

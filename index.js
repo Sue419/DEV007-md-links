@@ -1,42 +1,55 @@
-const { error } = require('console');
-const fs = require('fs');
 const path = require('path');
-console.log(process.argv[2]);
+const { routeExists, isAbsolute, convertToAbsolute, isDirectory, isFile, isMarkdownFile } = require('./function.js');
 
-const routeExists = (ruta) => {
-  return fs.existsSync(ruta);
-};
+const folder = process.argv[2];
+
+// Verificar que la ruta existe
+const existRoute = routeExists(folder);
+console.log('Ruta existe:', existRoute);
+
+// Obtener la ruta absoluta si no lo es
+const rutaAbsoluta = isAbsolute(folder) ? folder : convertToAbsolute(folder);
+console.log('Ruta absoluta:', rutaAbsoluta);
 
 const mdLinks = (ruta, options) => {
   return new Promise((resolve, reject) => {
-    //Verificar que la ruta existe
+    // Verificar que la ruta existe
     const existRoute = routeExists(ruta);
     console.log('Ruta existe', existRoute);
-    //Si no existe se rechaza la promesa y finaliza el proceso
+    // Si no existe se rechaza la promesa y finaliza el proceso
     if (!existRoute) {
       reject(new Error('La ruta no existe.'));
       return;
     }
-    resolve('Enlaces encontrados');
-    // Si es que no se puede...se rechaza la operación
-    // reject(new Error('Ocurrió un error'));
-  })
-}
-const getFilesandDirectory =
-fs.stat(ruta, (error, stats) => {
-  if (error) {
-    reject(error);
-  } else {
-    if (stats.isFile()) {
-      resolve('archivo');
-    } else if (stats.isDirectory()) {
-      resolve('directorio');
+
+    if (isDirectory(ruta)) {
+      // Cuando la ruta es un directorio
+      console.log('Es un directorio');
+    } else if (isMarkdownFile(ruta)) {
+      // Cuando la ruta es un archivo Markdown
+      console.log('Es un archivo Markdown');
     } else {
-      resolve('otro'); // Si no es ni archivo ni directorio
+      // Cuando la ruta es otro tipo de archivo
+      console.log('Es otro tipo de archivo');
     }
-  }
-});
+
+    fs.stat(ruta, (error, stats) => {
+      if (error) {
+        reject(error);
+      } else {
+        if (stats.isFile()) {
+          resolve('archivo');
+        } else if (stats.isDirectory()) {
+          resolve('directorio');
+        } else {
+          resolve('otro'); // Si no es ni archivo ni directorio
+        }
+      }
+    });
+  });
+};
 
 module.exports = {
- mdLinks,
+  mdLinks,
 };
+
