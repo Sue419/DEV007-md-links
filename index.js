@@ -21,15 +21,14 @@ const mdLinks = (ruta, options) => {
     if (isDirectory(ruta)) {
       // Si la ruta es un directorio
       console.log('Es un directorio');
-      // Llamar a la función para explorar recursivamente los archivos en el directorio
+      // Llamar a la función para recorrer los archivos en el directorio
       exploreDirectory(ruta, linksArray);
       resolve(linksArray); // Resolvemos la promesa con el array de enlaces encontrados
     } else if (isMarkdownFile(ruta)) {
-      console.log('Es un archivo Markdown:', ruta);
       // Buscar los enlaces en el archivo directamente 
       const fileContent = fs.readFileSync(ruta, 'utf8');
-      const links = extractLinksFromFile(fileContent, ruta); // Aquí la ruta del archivo está como segundo argumento
-      linksArray.push(...links);
+      const links = extractLinksFromFile(fileContent, ruta);
+      linksArray.push(links);
       resolve(linksArray); // Resolvemos la promesa con el array de enlaces encontrados
     } else {
       // Si no se cumple ninguna de las condiciones anteriores, algo inesperado ocurrió

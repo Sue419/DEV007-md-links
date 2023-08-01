@@ -19,19 +19,12 @@ const convertToAbsolute = (rutaRelativa) => {
 
 // Verificar si es un directorio
 const isDirectory = (ruta) => {
-  if (!fs.existsSync(ruta)) {
-    return false; // La ruta no existe, retornamos falso
-  }
-
   const stats = fs.statSync(ruta);
   return stats.isDirectory();
 };
 
 // Verificar si es un archivo
 const isFile = (ruta) => {
-  if (!fs.existsSync(ruta)) {
-    return false; // La ruta no existe, retornamos falso
-  }
   return fs.statSync(ruta).isFile();
 };
 
@@ -60,7 +53,7 @@ const exploreDirectory = (ruta, linksArray) => {
 
 const extractLinksFromFileMD = (fileContent, route) => {
   // REGEX para encontrar enlaces Markdown en el contenido del archivo
-  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g; 
+  const linkRegex = /\[([^\]]+)\]\(([^\)]+)\)/g; 
   // /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
   const links = [];
   let match;
