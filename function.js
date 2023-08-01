@@ -1,15 +1,14 @@
 const path = require('path');
 const fs = require('fs');
 
-// Verificar si existe la ruta 
+// Verificar si existe la ruta
 const routeExists = (ruta) => {
-  return fs.existsSync(ruta);
+  const rutaAbsoluta = path.resolve(ruta);
+  return fs.existsSync(rutaAbsoluta);
 };
+
 // Verificar si la ruta es absoluta
 const isAbsolute = (ruta) => {
-  if (!path.isAbsolute(ruta)) {
-    ruta = path.resolve(ruta);
-  }
   return path.isAbsolute(ruta);
 };
 
@@ -18,28 +17,22 @@ const convertToAbsolute = (rutaRelativa) => {
   return path.resolve(rutaRelativa);
 };
 
-// Verificar si es Directorio
+// Verificar si es un directorio
 const isDirectory = (ruta) => {
-  try {
-    const stats = fs.statSync(ruta);
-    return stats.isDirectory();
-  } catch (error) {
-    // Si hay un error al obtener los stats, entonces no es un directorio y termina el proceso
-    return false;
+  if (!fs.existsSync(ruta)) {
+    return false; // La ruta no existe, retornamos falso
   }
+  return fs.statSync(ruta).isDirectory();
 };
 
 // Verificar si es un archivo
 const isFile = (ruta) => {
-  try {
-    const stats = fs.statSync(ruta);
-    return stats.isFile();
-  } catch (error) {
-    // Si hay un error al obtener los stats, se asume que no es un archivo
-    return false;
+  if (!fs.existsSync(ruta)) {
+    return false; // La ruta no existe, retornamos falso
   }
+  return fs.statSync(ruta).isFile();
 };
-
+// /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/; --- REGEX
 // Verificar si es un archivo Markdown
 const isMarkdownFile = (ruta) => {
   return path.extname(ruta) === '.md';
