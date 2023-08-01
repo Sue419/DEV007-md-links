@@ -22,7 +22,9 @@ const isDirectory = (ruta) => {
   if (!fs.existsSync(ruta)) {
     return false; // La ruta no existe, retornamos falso
   }
-  return fs.statSync(ruta).isDirectory();
+
+  const stats = fs.statSync(ruta);
+  return stats.isDirectory();
 };
 
 // Verificar si es un archivo
@@ -32,13 +34,54 @@ const isFile = (ruta) => {
   }
   return fs.statSync(ruta).isFile();
 };
-// /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/; --- REGEX
+
 // Verificar si es un archivo Markdown
 const isMarkdownFile = (ruta) => {
   return path.extname(ruta) === '.md';
 };
-console.log('Es archivo Markdown:', isMarkdownFile(process.argv[2]));
+
+// Función para recorrer recursivamente por los archivos en un directorio
+const exploreDirectory = (ruta, linksArray) => {
+  const files = fs.readdirSync(ruta);
+  files.forEach((file) => {
+    const fileOrDirectoryPath = path.join(ruta, file);
+    if (isDirectory(fileOrDirectoryPath)) {
+      exploreDirectory(fileOrDirectoryPath, linksArray);
+    } else if (isMarkdownFile(fileOrDirectoryPath)) {
+      console.log('Es un archivo Markdown:', fileOrDirectoryPath);
+      //Buscar enlaces
+      const fileContent = fs.readFileSync(fileOrDirectoryPath, 'utf8');
+      // función para extraer los enlaces del archivo
+      const links = extractLinksFromFileMD(fileContent, fileOrDirectoryPath); 
+      linksArray.push(links);
+    }
+  });
+};
+
+const extractLinksFromFileMD = (fileContent, route) => {
+  // REGEX para encontrar enlaces Markdown en el contenido del archivo
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g; 
+  // /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+  const links = [];
+  let match;
+
+  while ((match = linkRegex.exec(fileContent)) !== null) {
+    const text = match[1].slice(0, 80); // Acortar el texto del enlace si es demasiado largo
+    const href = match[2];
+    const file = route; // Usar la ruta del archivo para el enlace encontrado
+    links.push({ file, href, text });
+  }
+
+  return links;
+};
 
 module.exports = {
-  routeExists, isAbsolute, convertToAbsolute, isDirectory, isFile, isMarkdownFile,
- };
+  routeExists,
+  isAbsolute,
+  convertToAbsolute,
+  isDirectory,
+  isFile,
+  isMarkdownFile,
+  exploreDirectory,
+  extractLinksFromFileMD,
+};

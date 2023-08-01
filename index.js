@@ -1,7 +1,4 @@
-
-const { routeExists, isAbsolute, convertToAbsolute, isDirectory, isFile, isMarkdownFile } = require('./function.js');
-
-const folder = process.argv[2];
+const { routeExists, isAbsolute, convertToAbsolute, isDirectory, isFile, isMarkdownFile, exploreDirectory, extractLinksFromFile } = require('./function.js');
 
 const mdLinks = (ruta, options) => {
   return new Promise((resolve, reject) => {
@@ -19,21 +16,24 @@ const mdLinks = (ruta, options) => {
       ruta = convertToAbsolute(ruta);
     }
 
+    const linksArray = []; // Array para almacenar los enlaces encontrados
+
     if (isDirectory(ruta)) {
-      // Cuando la ruta es un directorio
+      // Si la ruta es un directorio
       console.log('Es un directorio');
-      resolve('directorio');
+      // Llamar a la función para explorar recursivamente los archivos en el directorio
+      exploreDirectory(ruta, linksArray);
+      resolve(linksArray); // Resolvemos la promesa con el array de enlaces encontrados
     } else if (isMarkdownFile(ruta)) {
-      // Cuando la ruta es un archivo Markdown
-      console.log('Es un archivo Markdown');
-      resolve('archivo');
-    } else if (isFile(ruta)) {
-      // Cuando la ruta es otro tipo de archivo
-      console.log('Es otro tipo de archivo');
-      resolve('otro');
+      console.log('Es un archivo Markdown:', ruta);
+      // Buscar los enlaces en el archivo directamente 
+      const fileContent = fs.readFileSync(ruta, 'utf8');
+      const links = extractLinksFromFile(fileContent, ruta); // Aquí la ruta del archivo está como segundo argumento
+      linksArray.push(...links);
+      resolve(linksArray); // Resolvemos la promesa con el array de enlaces encontrados
     } else {
       // Si no se cumple ninguna de las condiciones anteriores, algo inesperado ocurrió
-      reject(new Error('La ruta no es un archivo, tampo es un directorio ni un archivo Markdown válido.'));
+      reject(new Error('La ruta no es un archivo, tampoco es un directorio ni un archivo Markdown válido.'));
     }
   });
 };

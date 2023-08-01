@@ -1,13 +1,15 @@
-const path = require('path');
-const {mdLinks} = require('./index.js');
+const { mdLinks } = require('./index.js');
+const { exploreDirectory } = require('./function.js');
 
 const ruta = process.argv[2];
+console.log('Ruta ingresada:', ruta);
 
 mdLinks(ruta)
   .then((result) => {
-    console.log('Es archivo Markdown:', result === 'archivo');
-    console.log('Ruta ingresada:', path.resolve(ruta));
     console.log('La ruta existe:', result);
+    console.log('Ruta ingresada:', ruta);
+    console.log('Es archivo Markdown:', result === 'archivo');
+
   })
   .catch((error) => {
     console.error('Error: La ruta no existe', error.message);
