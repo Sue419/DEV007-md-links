@@ -54,9 +54,8 @@ const exploreDirectory = (ruta, linksArray) => {
 const extractLinksFromFileMD = (fileContent, route) => {
   // REGEX para encontrar enlaces Markdown en el contenido del archivo
   const linkRegex = /\[([^\]]+)\]\(([^\)]+)\)/g; 
-  // /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+  // /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/; para validar los hipervinculos
   const links = [];
-  let match;
 
   while ((match = linkRegex.exec(fileContent)) !== null) {
     const text = match[1].slice(0, 80); // Acortar el texto del enlace si es demasiado largo
