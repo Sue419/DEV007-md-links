@@ -52,20 +52,30 @@ const exploreDirectory = (ruta, linksArray) => {
 };
 
 const extractLinksFromFileMD = (fileContent, ruta) => {
-  // REGEX para encontrar enlaces Markdown en el contenido del archivo
-  const linkRegex = /\[([^\]]+)\]\(([^\)]+)\)/g; 
-  // /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/; para validar los hipervinculos
+  const linkRegex = /\[([^\]]+)\]\(([^\)]+)\)/g;
   const links = [];
 
-  while ((match = linkRegex.exec(fileContent)) !== null) {
-    const text = match[1].slice(0, 80); // Acortar el texto del enlace si es demasiado largo
-    const href = match[2];
+  const matches = [...fileContent.matchAll(linkRegex)];
+  matches.forEach((match) => {
+    const text = match[1].slice(0, 50); // Acortar el texto del enlace si es demasiado largo
+    const href = match[2]; // hipervínculo
     const file = ruta; // Usar la ruta del archivo para el enlace encontrado
     links.push({ file, href, text });
-  }
+  });
 
   return links;
 };
+
+ // /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/; para validar los hipervinculos
+/*const matches = fileContent.match(linkRegex);
+  if (matches) {
+    matches.forEach((match) => {
+      const text = match[1].slice(0, 80); 
+      const href = match[2];
+      const file = ruta; 
+      links.push({ file, href, text });
+    });
+  }*/
 
 module.exports = {
   routeExists,
