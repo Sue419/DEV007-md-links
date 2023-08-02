@@ -1,5 +1,4 @@
 const { mdLinks } = require('./index.js');
-const { exploreDirectory } = require('./function.js');
 
 const ruta = process.argv[2];
 console.log('Ruta ingresada:', ruta);
