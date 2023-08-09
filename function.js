@@ -1,15 +1,11 @@
 const path = require('path');
 const fs = require('fs');
+const axios = require('axios');
 
-// Verificar si existe la ruta
+// Verificar si existe la ruta y Verificar si la ruta es absoluta
 const routeExists = (ruta) => {
   const rutaAbsoluta = path.resolve(ruta);
   return fs.existsSync(rutaAbsoluta);
-};
-
-// Verificar si la ruta es absoluta
-const isAbsolute = (ruta) => {
-  return path.isAbsolute(ruta);
 };
 
 // Convertir una ruta relativa a absoluta
@@ -23,36 +19,35 @@ const isDirectory = (ruta) => {
   return stats.isDirectory();
 };
 
-// Verificar si es un archivo
-const isFile = (ruta) => {
-  return fs.statSync(ruta).isFile();
-};
-
 // Verificar si es un archivo Markdown
 const isMarkdownFile = (ruta) => {
   return path.extname(ruta) === '.md';
 };
 
-// Función para recorrer recursivamente por los archivos en un directorio
-const exploreDirectory = (ruta, linksArray) => {
-  const files = fs.readdirSync(ruta);
-  files.forEach((file) => {
-    const fileOrDirectoryPath = path.join(ruta, file);
-    if (isDirectory(fileOrDirectoryPath)) {
-      exploreDirectory(fileOrDirectoryPath, linksArray);
-    } else if (isMarkdownFile(fileOrDirectoryPath)) {
-      console.log('Es un archivo Markdown:', fileOrDirectoryPath);
-      //Buscar enlaces
-      const fileContent = fs.readFileSync(fileOrDirectoryPath, 'utf8');
-      // función para extraer los enlaces del archivo
-      const links = extractLinksFromFileMD(fileContent, fileOrDirectoryPath); 
-      linksArray.push(links);
-    }
-  });
-};
+// Función para recorrer recursivamente los directorios y subdirectorios para encontrar archivos MD
+const exploreDirectory = (directory) => {
+  let mdFiles = [];
+
+  const searchMdFiles = (currentDirectory) => {
+    const files = fs.readdirSync(currentDirectory);
+
+    files.forEach((file) => {
+      const filePath = path.join(currentDirectory, file);
+      const isDirectory = fs.statSync(filePath).isDirectory();
+
+      if (isDirectory) {
+        searchMdFiles(filePath);
+      } else if (isMarkdownFile(filePath)) {
+        mdFiles.push(path.resolve(filePath));
+      }
+    });
+  };
+  searchMdFiles(directory);
+  return mdFiles;
+}
 
 const extractLinksFromFileMD = (fileContent, ruta) => {
-  const linkRegex = /\[([^\]]+)\]\(([^\)]+)\)/g;
+  const linkRegex = /\[([^\]]+)\]\(([^\)]+)\)/g; // /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g
   const links = [];
 
   const matches = [...fileContent.matchAll(linkRegex)];
@@ -66,24 +61,31 @@ const extractLinksFromFileMD = (fileContent, ruta) => {
   return links;
 };
 
- // /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/; para validar los hipervinculos
-/*const matches = fileContent.match(linkRegex);
-  if (matches) {
-    matches.forEach((match) => {
-      const text = match[1].slice(0, 80); 
-      const href = match[2];
-      const file = ruta; 
-      links.push({ file, href, text });
-    });
-  }*/
+// VERIFICAR SU HTTP Y STATUS (VALIDATE)
+const validateLinks = (link) => new Promise((resolve) => {
+    return axios
+    .get(link.href)
+      .then((response) => {
+
+        link.ok = response.status >= 200 && response.status < 400 ? 'ok' : 'fail';
+        link.status = response.status;
+        resolve (link);
+      })
+      .catch((error) => {
+        link.ok = 'fail';
+        link.status = error.response ? error.response.status : 'fail';
+        resolve (link);
+      });
+});
 
 module.exports = {
   routeExists,
-  isAbsolute,
   convertToAbsolute,
   isDirectory,
-  isFile,
   isMarkdownFile,
   exploreDirectory,
   extractLinksFromFileMD,
+  validateLinks,
 };
+
+// /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/; para validar los hipervinculos
