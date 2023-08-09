@@ -1,37 +1,64 @@
-const { routeExists, isAbsolute, convertToAbsolute, isDirectory, isFile, isMarkdownFile, exploreDirectory, extractLinksFromFile } = require('./function.js');
+const fs = require('fs');
+const { routeExists, isDirectory, isMarkdownFile, exploreDirectory, extractLinksFromFileMD, validateLinks } = require('./function.js');
 
 const mdLinks = (ruta, options) => {
   return new Promise((resolve, reject) => {
     // Verificar que la ruta existe
     const existRoute = routeExists(ruta);
-    console.log('Ruta existe', existRoute);
     // Si no existe se rechaza la promesa y finaliza el proceso
     if (!existRoute) {
       reject(new Error('La ruta no existe.'));
       return;
     }
 
-    // Verificar si la ruta es absoluta y, si no lo es, convertirla a absoluta
-    if (!isAbsolute(ruta)) {
-      ruta = convertToAbsolute(ruta);
-    }
-
-    const linksArray = []; // Array para almacenar los enlaces encontrados
-
     if (isDirectory(ruta)) {
-      // Si la ruta es un directorio
       console.log('Es un directorio');
       // Llamar a la función para recorrer los archivos en el directorio
-      exploreDirectory(ruta, linksArray);
-      resolve(linksArray); // Resolvemos la promesa con el array de enlaces encontrados
+      const mdFiles = exploreDirectory(ruta);
+      const linksPromises = mdFiles.map((mdFile) => {
+        const fileContent = fs.readFileSync(mdFile, 'utf8');
+        const linksArray = extractLinksFromFileMD(fileContent, mdFile);
+
+        if (options && options.validate) {
+          const validatePromises = linksArray.map((link) => validateLinks(link));
+          return Promise.all(validatePromises);
+        }
+
+        return linksArray;
+      });
+
+      Promise.all(linksPromises)
+        .then((linksArrays) => {
+          const flattenedLinksArray = linksArrays.flat();
+          if (flattenedLinksArray.length > 0) {
+            resolve(flattenedLinksArray);
+          } else {
+            resolve('No se encontraron enlaces en los archivos Markdown.');
+          }
+        })
+        .catch((error) => {
+          reject(error);
+        });
     } else if (isMarkdownFile(ruta)) {
+      console.log('Es un archivo Markdown');
+      
       // Buscar los enlaces en el archivo directamente 
       const fileContent = fs.readFileSync(ruta, 'utf8');
-      const links = extractLinksFromFile(fileContent, ruta);
-      linksArray.push(links);
-      resolve(linksArray); // Resolvemos la promesa con el array de enlaces encontrados
+      const linksArray = extractLinksFromFileMD(fileContent, ruta);
+      
+      if (options && options.validate) {
+        const validatePromises = linksArray.map((link) => validateLinks(link));
+        Promise.all(validatePromises)
+          .then((validatedLinks) => {
+            resolve(validatedLinks);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      } else {
+        resolve(linksArray);
+      }
     } else {
-      // Si no se cumple ninguna de las condiciones anteriores, algo inesperado ocurrió
       reject(new Error('La ruta no es un archivo, tampoco es un directorio ni un archivo Markdown válido.'));
     }
   });
