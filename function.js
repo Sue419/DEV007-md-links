@@ -78,6 +78,15 @@ const validateLinks = (link) => new Promise((resolve) => {
       });
 });
 
+// FUNCIÓN STATS
+const calculateStats = (links) => {
+  const totalLinks = links.length;
+  
+  const uniqueLinks = new Set(links.map(link => link.href)).size;
+  const brokenLinks = links.filter(link => link.ok === 'fail').length;
+  return { total: totalLinks, unique: uniqueLinks, broken: brokenLinks };
+};
+
 module.exports = {
   routeExists,
   convertToAbsolute,
@@ -86,6 +95,7 @@ module.exports = {
   exploreDirectory,
   extractLinksFromFileMD,
   validateLinks,
+  calculateStats,
 };
 
 // /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/; para validar los hipervinculos
