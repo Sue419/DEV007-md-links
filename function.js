@@ -86,11 +86,11 @@ const calculateStats = (links) => {
     broken: 0,
   };
   
-  const uniqueLinks = {};
+  const uniqueLinks = {}; // objeto en lugar de arreglo
   const brokenLinks = [];
   
   links.forEach((link) => {
-    if (!uniqueLinks[link.href]) {
+    if (uniqueLinks[link.href]) {
       uniqueLinks[link.href] = true;
       stats.unique++;
     }
