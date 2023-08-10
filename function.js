@@ -80,11 +80,28 @@ const validateLinks = (link) => new Promise((resolve) => {
 
 // FUNCIÓN STATS
 const calculateStats = (links) => {
-  const totalLinks = links.length;
+  const stats = {
+    total: links.length,
+    unique: 0,
+    broken: 0,
+  };
   
-  const uniqueLinks = new Set(links.map(link => link.href)).size;
-  const brokenLinks = links.filter(link => link.ok === 'fail').length;
-  return { total: totalLinks, unique: uniqueLinks, broken: brokenLinks };
+  const uniqueLinks = {};
+  const brokenLinks = [];
+  
+  links.forEach((link) => {
+    if (!uniqueLinks[link.href]) {
+      uniqueLinks[link.href] = true;
+      stats.unique++;
+    }
+    
+    if (link.ok === 'fail') {
+      brokenLinks.push(link);
+      stats.broken++;
+    }
+  });
+  
+  return stats;
 };
 
 module.exports = {
