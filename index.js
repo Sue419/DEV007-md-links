@@ -19,11 +19,6 @@ const mdLinks = (ruta, options) => {
         const fileContent = fs.readFileSync(mdFile, 'utf8');
         const linksArray = extractLinksFromFileMD(fileContent, mdFile);
 
-        if (options && options.validate) {
-          const validatePromises = linksArray.map((link) => validateLinks(link));
-          return Promise.all(validatePromises);
-        }
-
         return linksArray;
       });
 
