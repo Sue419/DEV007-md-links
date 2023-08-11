@@ -1,6 +1,6 @@
-const chalk = require('chalk');
-const { mdLinks } = require('./index.js');
 
+const { mdLinks } = require('./index.js');
+const chalk = require('chalk');
 
 const ruta = process.argv[2];
 const options = {

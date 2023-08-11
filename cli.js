@@ -1,4 +1,5 @@
 const { mdLinks } = require('./index.js');
+const chalk = require('chalk');
 
 const ruta = process.argv[2];
 const options = {
@@ -6,36 +7,38 @@ const options = {
   stats: process.argv.includes('--stats'),       // Verificar si está presente --stats
 };
 
-console.log('Ruta ingresada:', ruta);
+console.log(chalk.blue(`Ruta ingresada: ${ruta}`));
 
 mdLinks(ruta, options)
   .then((result) => {
     if (Array.isArray(result)) {
-      console.log('La ruta existe');
+      console.log(chalk.green('La ruta existe'));
       if (options.stats) {
-        console.log('Estadísticas de los links:');
-        console.log(`Total: ${result.length}`);
-        console.log(`Unique: ${new Set(result.map((link) => link.href)).size}`);
+        console.log(chalk.yellow(`Total: ${result.length}`));
+        console.log(chalk.yellow(`Unique: ${new Set(result.map((link) => link.href)).size}`));
         const brokenLinks = result.filter((link) => link.ok === 'fail').length;
-        console.log(`Broken: ${brokenLinks}`);
+        console.log(chalk.red(`Broken: ${brokenLinks}`));
       } else {
         result.forEach((link) => {
-          console.log(`Archivo: ${link.file}`);
-          console.log(`Enlace: ${link.href}`);
-          console.log(`Texto: ${link.text}`);
-          console.log(`Status: ${link.status}`);
-          console.log(`Estado: ${link.ok === 'ok' ? 'ok' : 'fail'}`);
+          console.log(chalk.cyan(`Archivo: ${link.file}`));
+          console.log(chalk.cyan(`Enlace: ${link.href}`));
+          console.log(chalk.cyan(`Texto: ${link.text}`));
+          console.log(chalk.magenta(`Status: ${link.status}`));
+          console.log(chalk[link.ok === 'ok' ? 'green' : 'red'](`Estado: ${link.ok === 'ok' ? 'ok' : 'fail'}`));
           console.log(""); 
         });
       }
     } else if (typeof result === 'string') {
-      console.log(result);
+      console.log(chalk.red(`Error: ${result}`));
     } else if (result === 'archivo') {
-      console.log('Es un archivo Markdown');
+      console.log(chalk.yellow('Es un archivo Markdown'));
     } else if (result === 'directorio') {
-      console.log('Es un directorio');
+      console.log(chalk.yellow('Es un directorio'));
     } 
   })
   .catch((error) => {
-    console.error('Error:', error.message);
+    console.error(chalk.red('Error:', error.message));
   });
+
+
+  //link.ok === "ok" ? chalk.green.italic("✔") : chalk.red.italic("✖");

@@ -139,7 +139,7 @@ const {
   
       const stats = calculateStats(links);
   
-      expect(stats.total).toBe(links.length);
+      expect(stats.total).toBe(3);
       expect(stats.unique).toBe(1); 
       expect(stats.broken).toBe(2);
     });
