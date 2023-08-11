@@ -52,7 +52,7 @@ const extractLinksFromFileMD = (fileContent, ruta) => {
 
   const matches = [...fileContent.matchAll(linkRegex)];
   matches.forEach((match) => {
-    const text = match[1].slice(0, 50); // Acortar el texto del enlace si es demasiado largo
+    const text = match[1].slice(0,50); // Acortar el texto del enlace si es demasiado largo
     const href = match[2]; // hipervínculo
     const file = ruta; // Usar la ruta del archivo para el enlace encontrado
     links.push({ file, href, text });
@@ -79,28 +79,29 @@ const validateLinks = (link) => new Promise((resolve) => {
 });
 
 // FUNCIÓN STATS
+// En tu archivo function.js
 const calculateStats = (links) => {
   const stats = {
-    total: links.length,
-    unique: 0,
-    broken: 0,
+    total: links.length, //todos los links encontrados en .md
+    unique: 0, //links ok
+    broken: 0, //links fail
   };
-  
-  const uniqueLinks = {}; // objeto en lugar de arreglo
-  const brokenLinks = [];
-  
+
+  const uniqueLinks = {}; // Objeto para almacenar enlaces únicos
+
   links.forEach((link) => {
-    if (uniqueLinks[link.href]) {
+    if (!uniqueLinks[link.href]) {
       uniqueLinks[link.href] = true;
-      stats.unique++;
+      if (link.ok !== 'fail') {
+        stats.unique++;
+      }
     }
-    
+
     if (link.ok === 'fail') {
-      brokenLinks.push(link);
       stats.broken++;
     }
   });
-  
+
   return stats;
 };
 
