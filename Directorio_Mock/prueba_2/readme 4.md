@@ -13,29 +13,11 @@ Recopilamos siete historias de usuario, que podemos ver a continuación, tambien
 
 [Link historias de usuarios](https://docs.google.com/spreadsheets/d/1ytLTevb_3QAbttfVcF-lRlaGXfcJpWaV/edit?usp=sharing&ouid=105057202485758423586&rtpof=true&sd=true)
 
-
-## 6. Planificación
-
-Durante todo el proyecto utilizamos nuestra planificación de tareas en Trello, esta herramienta nos permitio realizar diseño paso a paso, teniendo a mano recursos y actividades para cada sprint.
-
-Link Trello [Link Trello](https://trello.com/b/YE89Cj6d/social-network)
-
 ![trello](imgReadMe/resumenTrello.jpg)
 
 ## 7. Material utilizado
 
-### Mobile first
-
-El concepto de [_mobile first_](https://www.mediaclick.es/blog/diseno-web-responsive-design-y-la-importancia-del-mobile-first/)
-hace referencia a un proceso de diseño y desarrollo donde partimos de cómo se ve
-y cómo funciona la aplicación en un dispositivo móvil primero, y más adelante se
-ve como adaptar la aplicación a pantallas progresivamente grandes y
-características específicas del entorno desktop.
-
 Otras:
-
-* [Modulos: Export](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/export)
-* [Modulos: Import](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Sentencias/import)
 * [Diseño web, responsive design y la importancia del mobile first - Media Click](https://www.mediaclick.es/blog/diseno-web-responsive-design-y-la-importancia-del-mobile-first/)
 * [Mobile First: el enfoque actual del diseño web móvil - 1and1](https://www.1and1.es/digitalguide/paginas-web/diseno-web/mobile-first-la-nueva-tendencia-del-diseno-web/)
 * [Mobile First - desarrolloweb.com](https://desarrolloweb.com/articulos/mobile-first-responsive.html)
