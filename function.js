@@ -79,7 +79,6 @@ const validateLinks = (link) => new Promise((resolve) => {
 });
 
 // FUNCIÓN STATS
-// En tu archivo function.js
 const calculateStats = (links) => {
   const stats = {
     total: links.length, //todos los links encontrados en .md

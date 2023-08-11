@@ -13,6 +13,7 @@ mdLinks(ruta, options)
     if (Array.isArray(result)) {
       console.log('La ruta existe');
       if (options.stats) {
+        console.log('Estadísticas de los links:');
         console.log(`Total: ${result.length}`);
         console.log(`Unique: ${new Set(result.map((link) => link.href)).size}`);
         const brokenLinks = result.filter((link) => link.ok === 'fail').length;
