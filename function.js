@@ -81,23 +81,21 @@ const validateLinks = (link) => new Promise((resolve) => {
 // FUNCIÓN STATS
 const calculateStats = (links) => {
   const stats = {
-    total: links.length, //todos los links encontrados en .md
-    unique: 0, //links ok
-    broken: 0, //links fail
+    total: links.length, // todos los links encontrados en .md
+    unique: 0, // links únicos
+    broken: 0, // links fallidos
   };
 
-  const uniqueLinks = {}; // Objeto para almacenar enlaces únicos
+  const uniqueLinks = {}; // Almacena enlaces únicos
 
   links.forEach((link) => {
     if (!uniqueLinks[link.href]) {
       uniqueLinks[link.href] = true;
-      if (link.ok !== 'fail') {
-        stats.unique++;
-      }
+      stats.unique++; // Cuenta los links únicos
     }
 
     if (link.ok === 'fail') {
-      stats.broken++;
+      stats.broken++; // Cuenta los links rotos
     }
   });
 

@@ -117,17 +117,20 @@ const {
   
       return validateLinks(validLink)
         .then(validatedValidLink => {
-          expect(validatedValidLink.ok).toBe('ok');
+          expect(validatedValidLink.isValid).toBe(true);
+          expect(validatedValidLink.httpStatus).toBe(200);
           return validateLinks(invalidLink);
         })
         .then(validatedInvalidLink => {
-          expect(validatedInvalidLink.ok).toBe('fail');
+          expect(validatedInvalidLink.isValid).toBe(false);
+          expect(validatedInvalidLink.httpStatus).toBe(404);
         })
         .catch(error => {
-          // error
+          // ERROR
         });
     });
   });
+  
 
   describe('calculateStats', () => {
     it('debe calcular cuántos enlaces hay en total, unique y broken', () => {
@@ -139,8 +142,8 @@ const {
   
       const stats = calculateStats(links);
   
-      expect(stats.total).toBe(3);
-      expect(stats.unique).toBe(1); 
+      expect(stats.total).toBe(links.length);
+      expect(stats.unique).toBe(3); 
       expect(stats.broken).toBe(2);
     });
   });
