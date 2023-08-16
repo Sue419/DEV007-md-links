@@ -1,14 +1,14 @@
 # Markdown Links
+![Alt text](img/mdlinks.jpg)
 
 ## Índice
 
 * [1. Preámbulo](#1-preámbulo)
 * [2. Resumen del proyecto](#2-resumen-del-proyecto)
 * [3. Instrucciones de uso](#3-instrucciones-de-uso)
-* [7. Hacker edition](#7-hacker-edition)
-* [8. Pistas, tips y lecturas complementarias](#8-pistas-tips-y-lecturas-complementarias)
-* [9. Checklist](#9-checklist)
-* [10. Achicando el problema](#10-achicando-el-problema)
+* [4. Pruebas unitarias](#4-pruebas-unitarias)
+* [5. Diagrama de flujo](#5-diagrama-de-flujo)
+* [6. Checklist](#6-checklist)
 
 ***
 
@@ -28,8 +28,6 @@ Dentro de una comunidad de código abierto, nos han propuesto crear una
 herramienta usando [Node.js](https://nodejs.org/), que lea y analice archivos
 en formato `Markdown`, para verificar los links que contengan y reportar
 algunas estadísticas.
-
-![md-links](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
 
 ## 2. Resumen del proyecto
 
@@ -54,22 +52,32 @@ La 'ruta' representa la ruta del archivo o directorio, la cual puede ser una rut
 - Ruta sin opciones:
 Cuando no se pasa ninguna opción, se mostrará solo la información básica de los links.
 
+![Alt text](<img/no options.png>)
+
 - Opción: --stats 
 Cuando se ejecuta esta opción, el output (salida) mostrará la información sobre la cantidad de links encontrados en los archivos .md y no repetidos (links únicos).
+
+![Alt text](img/stats.png)
 
 - Opción: -- validate --stats 
 Cuando se ejecuta esta opción, la información que mostrará la información sobre la cantidad de links encontrados, cantidad de links únicos (no repetidos) y la cantidad de links rotos (no funcionales).
 
+![Alt text](<img/validate and stats.png>)
+
 - Opción: --validate
 Cuando se ejecuta esta opción, el módulo hará una petición HTTP para validar si los links encontrados en los archivos Markdown funcionan o no. Por ello, si el link responde ok, entonces consideraremos el link como funcional. Pero si el link responde con fail, entonces consideraremos el link como roto. 
+
+![Alt text](img/validate.png)
 
 ## 4. Pruebas unitarias
 
 Resultados de los test realizados a las funciones.
 
-
+![Alt text](img/test.png)
 
 ## 5. Diagrama de flujo
+
+![Alt text](<img/Diagrama de flujo MD LINKS.jpg>)
 
 ## 6. Checklist
 ### General
