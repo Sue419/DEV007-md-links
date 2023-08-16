@@ -1,5 +1,5 @@
 const fs = require('fs');
-
+const chalk = require('chalk')
 const {
   routeExists,
   convertToAbsolute,
@@ -10,6 +10,7 @@ const {
   validateLinks,
   calculateStats,
 } = require('./function.js');
+
 
 const mdLinks = (ruta, options) => {
   return new Promise((resolve, reject) => {
@@ -22,6 +23,7 @@ const mdLinks = (ruta, options) => {
 
     if (isDirectory(absoluteRoute)) {
       const mdFiles = exploreDirectory(absoluteRoute);
+      //console.log(chalk.blue('Es un directorio'));
       const allLinks = [];
 
       mdFiles.forEach((file) => {
@@ -118,7 +120,7 @@ const mdLinks = (ruta, options) => {
       }
 
     } else {
-      reject(new Error('La ruta no es archivo, directorio, o archivo MD.'));
+      reject(new Error('La ruta no es directorio o archivo MD.'));
       return;
     }
   });
